@@ -11,6 +11,8 @@ stimuli['id'] = stimuli['id'].astype(int)
 sentences = []
 labels = []
 
+
+#pulls the correct sentences from the csv using the id and label, puts the label in one list and sentence in another
 for id, target in eeg_sentence_ids:
     id = int(id)
 
@@ -30,5 +32,6 @@ print(labels[0:5])
 np.savez(r"C:\\Users\\cally\\ProgramsAndProjects\\NN Hwk\\Project",
          sentences_english=sentences,
          labels_str=labels)
+
 
 
