@@ -3,14 +3,18 @@ import pandas as pd
 import mne
 import os
 
-
-
+'''
+SIGNAL EEG data has no metadata, and also uploaded every sentence for each participant, 
+so this program is mainly matching EEG data with their proper sentence ids
+'''
 
 all_data = []
 all_sentence_ids = []
 
 folder = "C:\\Users\\cally\\ProgramsAndProjects\\NN Hwk\\Project\\eegs"
 
+
+#iterates through epoch.events, if the event_id == event name in csv, epoch.getdata and append to array all_data & append sentence_id to list to be used later
 for f in os.listdir(folder):
     file = os.path.join(folder, f)
 
@@ -26,21 +30,18 @@ for f in os.listdir(folder):
     csv_idx = 0
 
     while epoch_idx < len(epochs) and csv_idx < len(df):
-    # Get current epoch label
-        epoch_label = id_to_label[epochs.events[epoch_idx, 2]]
-
-    # Get current CSV row event_name
-        csv_label = df.iloc[csv_idx]['event_name']
+    
+        epoch_label = id_to_label[epochs.events[epoch_idx, 2]] #current epoch label
+        
+        csv_label = df.iloc[csv_idx]['event_name'] #current csv row event_name
 
         if epoch_label == csv_label:
-        # match: append data and sentence_id
             all_data.append(epochs[epoch_idx].get_data())
             all_sentence_ids.append((df.iloc[csv_idx]['sentence_id'],df.iloc[csv_idx]['target']))
 
             epoch_idx += 1
             csv_idx += 1
         else:
-        # no match: advance only the CSV pointer
             csv_idx += 1
 
 
@@ -55,5 +56,6 @@ print(len(all_sentence_ids))
 np.savez(r"C:\\Users\\cally\\ProgramsAndProjects\\NN Hwk\\Project",
          data=all_data,
          sentence_ids=all_sentence_ids)
+
 
 
