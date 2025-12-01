@@ -52,6 +52,14 @@ npz2 = np.load("C:\\Users\\cally\\ProgramsAndProjects\\NN Hwk\\Project\\eegdata&
 eeg_data = npz2["data"]
 
 
+
+
+'''
+NOTE: the sentences and EEG data were already shuffled in the corpus, so it is not necessary to use train_test_split function here
+and would likely cause more data leakage, as each participant repeated the same 600 sentences. The only thing that is not shuffled is
+the participant order, removing the data of entire participants from training is better than removing data randomly.
+'''
+
 split = int(0.8 * len(eeg_data))
 eeg_train, eeg_test = eeg_data[:split], eeg_data[split:]
 sentence_train, sentence_test = oneD_token_features[:split], oneD_token_features[split:]
@@ -59,6 +67,7 @@ labels_train, labels_test = labels[:split], labels[split:]
 
 print(eeg_train.shape, sentence_train.shape, labels_train.shape)
 print(type(eeg_train), type(sentence_train), type(labels_train))
+
 
 
 np.savez(r"C:\\Users\\cally\\ProgramsAndProjects\\NN Hwk\\Project",
@@ -69,4 +78,5 @@ np.savez(r"C:\\Users\\cally\\ProgramsAndProjects\\NN Hwk\\Project",
          labels_train=labels_train,
          labels_test=labels_test
          )
+
 
