@@ -2,8 +2,8 @@
 Repo for final project of CSCI 5122 (Neural Networks &amp; Deep Learning)
 
 ## Abstract
-In neuroscience, Event-related potentials (ERPs) are very small voltages generated in the brain structures in response to specific events or stimuli (Blackwood and Muir, 1990). These are measured using electroencephalography (EEG). There are two widely-studied ERPs related to linguistics: the N400 and the P600. The N400 is a negative waveform that peaks about 400ms after a person is introduced to a lexical or semantic error. The P600 waveform peaks positively about 600ms after a stimulus containing a syntactical error.
-In this project, I use two CNNs and an ANN to see if, given sentence-level embeddings and sentence-locked EEG data, an ANN can classify whether a sentence contains a grammatical, syntactical, or syntactic_grammatical error, or is simply normal. While reasearch has been done on using CNNs to decode EEGs (see EEGNet and DeepConvNet), I have not seen a classification task like this one, especially related to non-English data.
+In neuroscience, Event-related potentials (ERPs) are very small voltages generated in the brain structures in response to specific events or stimuli (Blackwood and Muir, 1990). These are measured using electroencephalography (EEG). There are two widely-studied ERPs related to linguistics: the N400 and the P600. The N400 is a negative waveform that peaks about 400ms after a person is introduced to a lexical or semantic error. The P600 waveform peaks positively about 600ms after a stimulus containing a syntactical/grammatical error.
+In this project, I use two CNNs and an ANN to see if, given sentence-level embeddings and sentence-locked EEG data, an ANN can classify whether a sentence contains a grammatical, semantic, or semantic_grammatical error, or is simply normal. While reasearch has been done on using CNNs to decode EEGs (see EEGNet and DeepConvNet), I have not seen a classification task like this one, especially related to non-English data.
 
 
 ## Analysis
@@ -39,6 +39,7 @@ Loss:
 
 Confusion Matrix:
 <img width="1081" height="1069" alt="image" src="https://github.com/user-attachments/assets/2ebd8890-3981-47fa-a416-8cb9a0c641b8" />
+Note that the classes here are "grammatical error", "normal", "semantic error", "semantic_grammatical error"
 
 Despite only running the model for 10 epochs, it did a very good job capturing the types of errors seen in the embeddings and participant EEGs. Based on these results, I would consider this branching model architecture a viable method for classifying ERP types given EEG data and the sentences used to ellicit the ERPs. I was concerned that the EEGs were temporally sentence-locked rather than event-locked, meaning there would be more information and noise for the model to parse through, though this did not pose an issue for the model. In terms of limitations, as always, data was difficult to find for this type of project. I do think this data might have been so easy for the model to parse because every participant read the exact same sentences. I wonder if this classification task using this architecture could be generalized to participants reading different sentences or perhaps speakers of a different language.
 
