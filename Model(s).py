@@ -108,7 +108,7 @@ plt.ylabel('Loss')
 plt.legend(loc='upper right')
 plt.show()
 #
-classes = ["grammatical error", "normal", "semantic error", "syntactic grammatical error"]
+classes = ["grammatical error", "normal", "semantic error", "semantic_grammatical error"]
 max_values = np.squeeze(np.array(predictions.argmax(axis=1)))
 cm = confusion_matrix(labels_test, max_values, labels=[0,1,2,3])
 fig, ax = plt.subplots(figsize=(13,13))
@@ -120,3 +120,4 @@ ax.xaxis.set_ticklabels(classes,rotation=90, fontsize = 18)
 ax.yaxis.set_ticklabels(classes,rotation=0, fontsize = 18)
 
 plt.show()
+
