@@ -31,5 +31,17 @@ Lastly, I concatenate the outputs from the two CNN models. I started with gated 
 
 ## Results
 
+Accuracy:
+<img width="1188" height="904" alt="image" src="https://github.com/user-attachments/assets/4ee5cf7c-3e54-484b-9feb-2bbc8cbf10e8" />
+
+Loss:
+<img width="1186" height="892" alt="image" src="https://github.com/user-attachments/assets/662d853d-e9ca-478e-90a7-b58d2674f0d5" />
+
+Confusion Matrix:
+<img width="1081" height="1069" alt="image" src="https://github.com/user-attachments/assets/2ebd8890-3981-47fa-a416-8cb9a0c641b8" />
+
+Despite only running the model for 10 epochs, it did a very good job capturing the types of errors seen in the embeddings and participant EEGs. Based on these results, I would consider this branching model architecture a viable method for classifying ERP types given EEG data and the sentences used to ellicit the ERPs. I was concerned that the EEGs were temporally sentence-locked rather than event-locked, meaning there would be more information and noise for the model to parse through, though this did not pose an issue for the model. In terms of limitations, as always, data was difficult to find for this type of project. I do think this data might have been so easy for the model to parse because every participant read the exact same sentences. I wonder if this classification task using this architecture could be generalized to participants reading different sentences or perhaps speakers of a different language.
 
 
+## Conclusion
+Computational models offer exciting opportunities for the analysis of neurolinguistic data.
