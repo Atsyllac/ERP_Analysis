@@ -2,31 +2,30 @@
 Repo for final project of CSCI 5122 (Neural Networks &amp; Deep Learning)
 
 ## Abstract
-In neuroscience, Event-related potentials (ERPs) are very small voltages generated in the brain structures in response to specific events or stimuli (Blackwood and Muir, 1990). These are measured using electroencephalography (EEG). There are two widely-studied ERPs related to linguistics: the N400 and the P600. The N400 is a negative waveform that peaks about 400ms after a person is introduced to a lexical or semantic error. The P600 waveform peaks positively about 600ms after a stimulus containing a syntactical/grammatical error.
-In this project, I use two CNNs and an ANN to see if, given sentence-level embeddings and sentence-locked EEG data, an ANN can classify whether a sentence contains a grammatical, semantic, or semantic_grammatical error, or is simply normal. While reasearch has been done on using CNNs to decode EEGs (see EEGNet and DeepConvNet), I have not seen a classification task like this one, especially related to non-English data.
+In neuroscience, Event-related potentials (ERPs) are defined as very small voltages generated in the brain structures in response to specific events or stimuli (Blackwood and Muir, 1990). These are measured using electroencephalography (EEG). As a linguist, I intend to focus on the most widely researched linguistic-related ERPS: the N400 and the P600. The N400 is a negative waveform that peaks about 400ms after a person is introduced to a lexical or semantic error. The P600 waveform peaks positively about 600ms after a stimulus containing a syntactical/grammatical error. In this project, I use two CNNs and an ANN to see if, given sentence-level embeddings provided via RuBERT and sentence-locked EEG data, a neural network can classify whether a sentence contains a grammatical, semantic, or semantic_grammatical error, or is simply normal. Through this classification task, I find that a branched neural network structure is not only a viable architecture for analyzing EEG epoch data concatenated with sentence embeddings, but that it also very accurately models how closely word embeddings are related to their respective representations in the brain, and how they capture grammatical and semantic anomalies in a manner similar to the brain's neurons.
 
 
 ## Analysis
 Because I am using both sentence embeddings and spatial data, I branched my model architecture. I use the (Semantic and Inferred Grammar Neurological Analysis of Language) SIGNAL dataset (https://huggingface.co/datasets/ContributorsSIGNAL/SIGNAL) for my project.
 
 ### Data Preparation
-The SIGNAL corpus contains EEG data from 21 participants, 600 sentences per participant. Using the MNE library in python I removed noisy data and gathered a total of 11,162 samples. Each EEG epoch/trial contained 63 channels (number of EEG electrodes on the person's scalp, each providing its own signal) and 1201 timepoints (taken sequentially as the participant read each sentence). Thus, the EEG data has shape (11162, 62, 1201).
+The SIGNAL corpus contains EEG data from 21 participants, 600 sentences per participant. Using the MNE library in Python, I removed noisy data and gathered a total of 11,162 samples. Each EEG epoch/trial contained 63 channels (number of EEG electrodes on the person's scalp, each providing its own signal) and 1201 timepoints (taken sequentially as the participant reads each sentence). Thus, the EEG data has shape (11162, 62, 1201). 
 
-Sentences and their respective target stimuli were provided with the data. I separated the sentences from the stimuli labels and used contextual embeddings via RuBERT (https://huggingface.co/DeepPavlov/rubert-base-cased)--sentences are in Russian. I did not use static embeddings nor did I pool the embedding data, as I wanted the encoder to capture the incongruency in the choices of words used for the incorrect sentences. The shape of this data is (11162, 768, 10) ((n, h, t)). 
+Sentences and their respective target stimuli were provided with the data. I separated the sentences from the stimuli labels and used contextual embeddings via RuBERT (https://huggingface.co/DeepPavlov/rubert-base-cased)--sentences are in Russian. I did not use static embeddings, nor did I pool the embedding data, as I wanted the encoder to capture the incongruency in the choices of words used for the incorrect sentences. The shape of this data is (11162, 768, 10) ((n, h, t)).  
 
-As the .npz files containing the total eeg data, total embedding data, and total label data are too large for me to upload to github, I will simply upload the code I used to prepare the data in the repo.
+As the .npz files containing the total EEG data, total embedding data, and total label data are too large for me to upload to GitHub, I will simply upload the code I used to prepare the data in the repo. 
 
 ### Models
-Rather than creating two sequential models, I used the Keras's functional API seen here https://pyimagesearch.com/2018/06/04/keras-multiple-outputs-and-multiple-losses/
+Rather than creating two sequential models, I used Keras's functional API seen here https://pyimagesearch.com/2018/06/04/keras-multiple-outputs-and-multiple-losses/
 
 #### The EEG CNN Branch
-Due to the 2D spatio-temporal nature of the EEG data, I modeled it using a CNN with 2D convolution. Kernel sizes were different from the norm, as a taller kernel would capture EEG signals more faithfully.
+Due to the 2D spatiotemporal nature of the EEG data, I modeled it using a CNN with 2D convolution. Kernel sizes were different from the norm, as a taller kernel would capture EEG signals more faithfully. 
 
 #### The Sentence Embedding CNN Branch
-I used a CNN for the embeddings as well, though this time with only 1D convolution. Kernel sizes and pooling sizes were standard.
+I used a CNN for the embeddings as well, though this time with only 1D convolution. Kernel sizes and pooling sizes were standard. 
 
 #### The ANN Classifier
-Lastly, I concatenate the outputs from the two CNN models. I started with gated fusion so the outputs from each model had their own weights and the ANN did not prioritize both equally, but found that this did not increase the model's accuracy and slowed training. The ANN itself is quite simple, with the output being the sentence/EEG grammaticality classification.
+Lastly, I concatenated the outputs from the two CNN models. I started with gated fusion so the outputs from each model had their own weights, and the ANN did not prioritize both equally, but found that this did not increase the model's accuracy and slowed training. The ANN itself is quite simple, with the output being the sentence/EEG grammaticality classification. 
 
 
 ## Results
@@ -41,8 +40,8 @@ Confusion Matrix:
 <img width="1081" height="1069" alt="image" src="https://github.com/user-attachments/assets/2ebd8890-3981-47fa-a416-8cb9a0c641b8" />
 Note that the classes here are "grammatical error", "normal", "semantic error", "semantic_grammatical error"
 
-Despite only running the model for 10 epochs, it did a very good job capturing the types of errors seen in the embeddings and participant EEGs. Based on these results, I would consider this branching model architecture a viable method for classifying ERP types given EEG data and the sentences used to ellicit the ERPs. I was concerned that the EEGs were temporally sentence-locked rather than event-locked, meaning there would be more information and noise for the model to parse through, though this did not pose an issue for the model. In terms of limitations, as always, data was difficult to find for this type of project. I do think this data might have been so easy for the model to parse because every participant read the exact same sentences. I wonder if this classification task using this architecture could be generalized to participants reading different sentences or perhaps speakers of a different language.
+Despite only running the model for 10 epochs, it did a very good job capturing the types of errors seen in the embeddings and participant EEGs. Based on these results, I would consider this branching model architecture a viable method for classifying ERP types given EEG data and the sentences used to elicit the ERPs. I was concerned that the EEGs were temporally sentence-locked rather than event-locked, meaning there would be more information and noise for the model to parse through, though this did not pose an issue for the model. In terms of limitations, as always, data was difficult to find for this type of project. I do think this data might have been so easy for the model to parse because every participant reads the exact same sentences. I wonder if this classification task using this architecture could be generalized to participants reading different sentences or perhaps speakers of a different language. 
 
 
 ## Conclusion
-Computational models offer exciting opportunities for the analysis of neurolinguistic data.
+Computational models offer exciting opportunities for the analysis of neurolinguistic data. The results from this project indicate that a branched neural network architecture can take sentence-locked EEG data and sentence-level embeddings and classify which type of stimulus resulted in the ERP. While research has been done on using CNNs to decode EEGs (see EEGNet and DeepConvNet), I have not seen a classification task such as this, especially using non-English data. The salient takeaway from this project is that a CNN can properly encode ERP data while giving less weight to the rest of an EEG scan, making token-locked EEG scans unnecessary for ERP analysis using neural networks. Additionally, sentence-level embeddings, rather than token-level embeddings, can be combined with EEG data to further research related to semantic representations of words in the brain. 
